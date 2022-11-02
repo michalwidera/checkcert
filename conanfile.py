@@ -10,11 +10,11 @@ class chceckcert(ConanFile):
     testing = []
 
     options = {
-        "openssl" : ["3.0.5"]
+        "openssl" : ["3.0.7"]
     }
 
     default_options = {
-        "openssl": "3.0.5"
+        "openssl": "3.0.7"
     }
 
     def configure(self):
