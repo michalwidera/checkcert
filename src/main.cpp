@@ -10,6 +10,8 @@
 #include <openssl/ssl.h> /* core library */
 #include <openssl/pem.h> /* pem files support */
 
+#include <openssl/x509_vfy.h>
+
 std::string pathToCert = "certificate.pem";
 
 int main() {
@@ -28,6 +30,24 @@ int main() {
         std::cout << "Could not parse certificate";
         return 0;
     }
+
+    ASN1_TIME *timeNotAfter = X509_get_notAfter(cert);
+    ASN1_TIME *timeNotBefore = X509_get_notBefore(cert);
+
+    const int len = 1024;
+    char buf[len];
+    BIO *bio;
+    int write = 0;
+    bio = BIO_new(BIO_s_mem());
+    if (bio)
+    {
+        if (ASN1_TIME_print(bio, X509_get_notBefore(cert)))
+            write = BIO_read(bio, buf, len - 1);
+        BIO_printf(bio, "\n");
+        BIO_free(bio);
+    }
+    buf[write] = '\0';
+
     fclose(fp);
     // certificate opened successfully
     // do something with `cert`
