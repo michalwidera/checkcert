@@ -14,14 +14,12 @@
 
 std::string pathToCert = "../test/data/Michal.pem";
 
-BIO *bio_out = NULL;
+BIO *out = NULL;
 
 int main()
 {
     SSL_load_error_strings();
     SSL_library_init();
-
-    bio_out = BIO_new_fp(stderr, BIO_NOCLOSE);
 
     FILE *fp = fopen(pathToCert.c_str(), "r");
     if (!fp)
@@ -44,12 +42,12 @@ int main()
     BIO *bio;
     int write = 0;
     bio = BIO_new(BIO_s_mem());
+    //bio = BIO_new_fp(stdout, BIO_NOCLOSE);
     if (bio)
     {
         if (ASN1_TIME_print(bio, X509_get_notBefore(cert)))
             write = BIO_read(bio, buf, len - 1);
-        //BIO_printf(bio, "\n");
-        printf("%s\n", buf);
+        BIO_printf(bio, "\n");
         BIO_free(bio);
     }
     else
@@ -58,6 +56,7 @@ int main()
     }
     buf[write] = '\0';
 
+    printf("%s\n", buf);
     fclose(fp);
     // certificate opened successfully
     // do something with `cert`
