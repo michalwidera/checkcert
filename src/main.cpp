@@ -12,22 +12,27 @@
 
 #include <openssl/x509_vfy.h>
 
-std::string pathToCert = "certificate.pem";
+std::string pathToCert = "../test/data/Michal.pem";
 
-int main() {
+BIO *bio_out = NULL;
+
+int main()
+{
     SSL_load_error_strings();
     SSL_library_init();
+
+    bio_out = BIO_new_fp(stderr, BIO_NOCLOSE);
 
     FILE *fp = fopen(pathToCert.c_str(), "r");
     if (!fp)
     {
-        std::cout << "Could not open certificate";
+        std::cout << "Could not open certificate" << std::endl;
         return 0;
     }
     X509 *cert = PEM_read_X509(fp, NULL, NULL, NULL);
     if (!cert)
     {
-        std::cout << "Could not parse certificate";
+        std::cout << "Could not parse certificate" << std::endl;
         return 0;
     }
 
@@ -43,8 +48,13 @@ int main() {
     {
         if (ASN1_TIME_print(bio, X509_get_notBefore(cert)))
             write = BIO_read(bio, buf, len - 1);
-        BIO_printf(bio, "\n");
+        //BIO_printf(bio, "\n");
+        printf("%s\n", buf);
         BIO_free(bio);
+    }
+    else
+    {
+        std::cout << "no bio" << std::endl;
     }
     buf[write] = '\0';
 
