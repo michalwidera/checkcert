@@ -1,7 +1,10 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-
+#include <sstream>
+#include <ctime>
+#include <iomanip>
+#include <chrono>
 
 // https://serverfault.com/questions/9708/what-is-a-pem-file-and-how-does-it-differ-from-other-openssl-generated-key-file
 
@@ -63,6 +66,12 @@ int main()
     // call X509_free(cert); to free the memory and prevent memory leaks
 
     X509_free(cert);
+
+    std::tm tm = {};
+    //std::stringstream ss("Jan 9 12:35:34 2014");
+    std::stringstream ss(buf);
+    ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
+    auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
     return 1;
 }
