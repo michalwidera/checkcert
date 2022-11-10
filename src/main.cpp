@@ -67,11 +67,20 @@ int main()
 
     X509_free(cert);
 
+    using namespace std::chrono;
+
     std::tm tm = {};
     //std::stringstream ss("Jan 9 12:35:34 2014");
     std::stringstream ss(buf);
     ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
-    auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+    auto tp = system_clock::from_time_t(std::mktime(&tm));
+    system_clock::duration d = system_clock::now() - tp;
+
+    // convert to number of days:
+    typedef duration<int, std::ratio<60 * 60 * 24>> days_type;
+    days_type ndays = duration_cast<days_type>(d);
+
+    std::cout << "Days: " << ndays.count() << std::endl;
 
     return 1;
 }
