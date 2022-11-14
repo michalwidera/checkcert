@@ -48,7 +48,7 @@ int main()
     //bio = BIO_new_fp(stdout, BIO_NOCLOSE);
     if (bio)
     {
-        if (ASN1_TIME_print(bio, X509_get_notBefore(cert)))
+        if (ASN1_TIME_print(bio, X509_get_notAfter(cert)))
             write = BIO_read(bio, buf, len - 1);
         BIO_printf(bio, "\n");
         BIO_free(bio);
@@ -74,13 +74,13 @@ int main()
     std::stringstream ss(buf);
     ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
     auto tp = system_clock::from_time_t(std::mktime(&tm));
-    system_clock::duration d = system_clock::now() - tp;
+    system_clock::duration remaining_days = tp - system_clock::now() ;
 
     // convert to number of days:
     typedef duration<int, std::ratio<60 * 60 * 24>> days_type;
-    days_type ndays = duration_cast<days_type>(d);
+    days_type ndays = duration_cast<days_type>(remaining_days);
 
-    std::cout << "Days: " << ndays.count() << std::endl;
+    std::cout << "Remaining Days: " << ndays.count() << std::endl;
 
     return 1;
 }
