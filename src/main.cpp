@@ -42,13 +42,12 @@ int main()
 
     const int len = 1024;
     char buf[len];
-    BIO *bio;
+    BIO *bio = BIO_new(BIO_s_mem());
     int write = 0;
-    bio = BIO_new(BIO_s_mem());
     //bio = BIO_new_fp(stdout, BIO_NOCLOSE);
     if (bio)
     {
-        if (ASN1_TIME_print(bio, X509_get_notAfter(cert)))
+        if (ASN1_TIME_print(bio, X509_get0_notAfter(cert)))
             write = BIO_read(bio, buf, len - 1);
         BIO_printf(bio, "\n");
         BIO_free(bio);
