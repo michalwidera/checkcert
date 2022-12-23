@@ -51,6 +51,8 @@ static void sigHandler(int signo)
 
 int main()
 {
+    int exitCode{EXIT_SUCCESS};
+
    	std::signal(SIGTERM, sigHandler);
 	std::signal(SIGINT, sigHandler);
 
@@ -123,8 +125,9 @@ int main()
             std::cerr << "ok - timeout hit." << std::endl;
             break;
         }
-        std::cerr << "other exit." << std::endl;        
+        std::cerr << "other exit." << std::endl;
+        exitCode = EXIT_FAILURE;
     }
 
-    return 1;
+    return exitCode;
 }
