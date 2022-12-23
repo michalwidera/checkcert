@@ -15,12 +15,45 @@
 
 #include <openssl/x509_vfy.h>
 
+#include <atomic>
+#include <condition_variable>
+#include <csignal>
+
+std::mutex cv_m;
+std::unique_lock<std::mutex> lock(cv_m);
+
+std::condition_variable exitSignal;
+
+std::atomic<int> exitSignalValue{0};
+
 std::string pathToCert = "../test/data/Michal.pem";
 
 BIO *out = NULL;
 
+static void sigHandler(int signo)
+{
+	switch (signo)
+	{
+	case SIGTERM:
+        std::cerr << "SIGTERM" << std::endl ;
+		exitSignalValue = signo;
+		exitSignal.notify_all();
+		break;
+	case SIGINT:
+        std::cerr << "SIGINT" << std::endl ;
+		exitSignalValue = signo;
+		exitSignal.notify_all();
+		break;
+	default:
+		break;
+	}
+}
+
 int main()
 {
+   	std::signal(SIGTERM, sigHandler);
+	std::signal(SIGINT, sigHandler);
+
     SSL_load_error_strings();
     SSL_library_init();
 
@@ -80,6 +113,18 @@ int main()
     days_type ndays = duration_cast<days_type>(remaining_days);
 
     std::cout << "Remaining Days: " << ndays.count() << std::endl;
+
+    auto expireTimePoint = std::chrono::system_clock::now() + 10s;
+
+    while ( exitSignalValue == 0 )
+    {
+        if (exitSignal.wait_until(lock,expireTimePoint) == std::cv_status::timeout)
+        {
+            std::cerr << "ok - timeout hit." << std::endl;
+            break;
+        }
+        std::cerr << "other exit." << std::endl;        
+    }
 
     return 1;
 }
