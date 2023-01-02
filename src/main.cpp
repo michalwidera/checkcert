@@ -113,6 +113,9 @@ int main(int argc, char* argv[])
     //std::stringstream ss("Jan 9 12:35:34 2014");
     std::stringstream ss(buf);
     ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
+
+    std::cout << "Report:" << ss << std::endl;
+
     auto tp = system_clock::from_time_t(std::mktime(&tm));
     system_clock::duration remaining_days = tp - system_clock::now() ;
 
@@ -121,6 +124,10 @@ int main(int argc, char* argv[])
     days_type ndays = duration_cast<days_type>(remaining_days);
 
     std::cout << "Remaining Days: " << ndays.count() << std::endl;
+
+    auto tp1 = system_clock::from_time_t(std::mktime(&tm));
+    auto nhours = duration_cast<hours>(tp1 - system_clock::now());
+    std::cout << "Certificate remaining days(tp):" << nhours.count() / 24 << std::endl ;
 /*
     auto expireTimePoint = std::chrono::system_clock::now() + 10s;
 
