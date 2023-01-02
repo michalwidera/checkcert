@@ -49,7 +49,7 @@ static void sigHandler(int signo)
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
     int exitCode{EXIT_SUCCESS};
 
@@ -58,6 +58,12 @@ int main()
 
     SSL_load_error_strings();
     SSL_library_init();
+
+    if (argc == 2)
+    {
+        std::cout << "Cert loc:" << argv[1] << std::endl ;
+        pathToCert = argv[1];
+    }
 
     FILE *fp = fopen(pathToCert.c_str(), "r");
     if (!fp)
@@ -115,7 +121,7 @@ int main()
     days_type ndays = duration_cast<days_type>(remaining_days);
 
     std::cout << "Remaining Days: " << ndays.count() << std::endl;
-
+/*
     auto expireTimePoint = std::chrono::system_clock::now() + 10s;
 
     while ( exitSignalValue == 0 )
@@ -128,6 +134,6 @@ int main()
         std::cerr << "other exit." << std::endl;
         exitCode = EXIT_FAILURE;
     }
-
+*/
     return exitCode;
 }
