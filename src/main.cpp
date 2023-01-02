@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
     std::stringstream ss(buf);
     ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
 
-    std::cout << "Report:" << ss << std::endl;
+    std::cout << "Report:" << buf << std::endl;
 
     auto tp = system_clock::from_time_t(std::mktime(&tm));
     system_clock::duration remaining_days = tp - system_clock::now() ;
