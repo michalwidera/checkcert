@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
 
     ASN1_TIME *timeNotAfter = X509_get_notAfter(cert);
     ASN1_TIME *timeNotBefore = X509_get_notBefore(cert);
+    std::tm tm = {};
 
     const int len = 1024;
     char buf[len];
@@ -104,17 +105,11 @@ int main(int argc, char* argv[])
     // certificate opened successfully
     // do something with `cert`
     // call X509_free(cert); to free the memory and prevent memory leaks
+    ASN1_TIME_to_tm(X509_get_notAfter(cert), &tm);
 
     X509_free(cert);
 
     using namespace std::chrono;
-
-    std::tm tm = {};
-    //std::stringstream ss("Jan 9 12:35:34 2014");
-    std::stringstream ss(buf);
-    ss >> std::get_time(&tm, "%b %d %H:%M:%S %Y");
-
-    std::cout << "Report:" << buf << std::endl;
 
     auto tp = system_clock::from_time_t(std::mktime(&tm));
     system_clock::duration remaining_days = tp - system_clock::now() ;
