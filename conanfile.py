@@ -26,6 +26,7 @@ class chceckcert(ConanFile):
 
     def requirements(self):
         self.requires("openssl/"+str(self.options.openssl))
+        self.requires("date/3.0.1")
 
     def build(self):
         cmake = CMake(self)

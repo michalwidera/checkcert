@@ -19,6 +19,8 @@
 #include <condition_variable>
 #include <csignal>
 
+#include <date/date.h>
+
 std::mutex cv_m;
 std::unique_lock<std::mutex> lock(cv_m);
 
@@ -49,6 +51,37 @@ static void sigHandler(int signo)
 	}
 }
 
+int date_manimpulation_test() {
+    std::tm tm = {0};
+    //strptime("2023-10-26 16:00", "%Y-%m-%dT %H:%M", &tm);
+    strptime("2013-12-04 15:03", "%Y-%m-%d %H:%M", &tm);
+    std::cerr << "y:" << tm.tm_year << std::endl ;
+    std::cerr << "m:" << tm.tm_mon << std::endl ;
+    std::cerr << "d:" << tm.tm_mday << std::endl ;
+    std::cerr << "h:" << tm.tm_hour << std::endl ;
+    std::cerr << "m:" << tm.tm_min << std::endl ;
+    std::cerr << "U:" << tm.tm_gmtoff << std::endl ;
+
+    using namespace std::chrono;
+    using namespace date;
+
+    auto tp_old = system_clock::from_time_t(std::mktime(&tm));
+
+    auto mon_correct(tm.tm_mon + 1);
+    auto year_correct(tm.tm_year + 1900);
+
+    auto ymd = year(year_correct) / mon_correct / tm.tm_mday;
+
+    auto tp_new = sys_days(ymd) + hours(tm.tm_hour) + minutes(tm.tm_min) + seconds(tm.tm_sec);
+
+    if ( tp_new != tp_old ) {
+        std::cerr << "new:" << tp_new << std::endl ;
+        std::cerr << "old:" << tp_old << std::endl ;
+    }
+
+    return EXIT_SUCCESS;
+}
+
 int main(int argc, char* argv[])
 {
     int exitCode{EXIT_SUCCESS};
@@ -58,6 +91,14 @@ int main(int argc, char* argv[])
 
     SSL_load_error_strings();
     SSL_library_init();
+
+    if (argc == 2 && std::string(argv[1]) == "date" )
+    {
+        std::cerr << "checkdate path" << std::endl ;
+        // Check date - path
+
+        return date_manimpulation_test();
+    }
 
     if (argc == 2)
     {

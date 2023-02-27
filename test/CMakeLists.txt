@@ -10,3 +10,9 @@ add_test(
   NAME check-cert
   WORKING_DIRECTORY ${CMAKE_TEST_DATA_DIR}
   COMMAND ${CMAKE_SOURCE_DIR}/build/bin/checkcert Michal.pem)
+
+
+  add_test(
+    NAME check-date
+    WORKING_DIRECTORY ${CMAKE_TEST_DATA_DIR}
+    COMMAND ${CMAKE_SOURCE_DIR}/build/bin/checkcert date)
