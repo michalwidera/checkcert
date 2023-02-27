@@ -9,4 +9,4 @@ set(CMAKE_TEST_DATA_DIR ${CMAKE_SOURCE_DIR}/test/data)
 add_test(
   NAME check-cert
   WORKING_DIRECTORY ${CMAKE_TEST_DATA_DIR}
-  COMMAND openssl help)
+  COMMAND ${CMAKE_SOURCE_DIR}/build/bin/checkcert Michal.pem)
