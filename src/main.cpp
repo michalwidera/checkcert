@@ -54,7 +54,7 @@ static void sigHandler(int signo)
 int date_manimpulation_test() {
     std::tm tm = {0};
     //strptime("2023-10-26 16:00", "%Y-%m-%dT %H:%M", &tm);
-    strptime("2013-12-04 15:03", "%Y-%m-%d %H:%M", &tm);
+    strptime("2039-12-04 15:03", "%Y-%m-%d %H:%M", &tm);
     std::cerr << "y:" << tm.tm_year << std::endl ;
     std::cerr << "m:" << tm.tm_mon << std::endl ;
     std::cerr << "d:" << tm.tm_mday << std::endl ;
